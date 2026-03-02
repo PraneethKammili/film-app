@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Add Aspect — FilmCollab{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>🎭 Add Film Aspect</h1>
+    <p>Describe your contribution to this project.</p>
+
+    <form id="aspectForm" action="{{ url_for('add_aspect', project_id=project_id) }}" method="POST" novalidate>
+        <div class="form-group">
+            <label for="aspect_type">Aspect Type</label>
+            <select id="aspect_type" name="aspect_type" required>
+                <option value="">-- Select aspect type --</option>
+                <option>Script / Screenplay</option>
+                <option>Direction</option>
+                <option>Cinematography</option>
+                <option>Music / Score</option>
+                <option>Editing</option>
+                <option>Production Design</option>
+                <option>Costume Design</option>
+                <option>Visual Effects</option>
+                <option>Sound Design</option>
+                <option>Acting</option>
+                <option>Producing</option>
+                <option>Other</option>
+            </select>
+            <span class="error-msg" id="aspectError"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="details">Details</label>
+            <textarea id="details" name="details" rows="4"
+                      placeholder="Describe this aspect of the film..." required></textarea>
+            <span class="error-msg" id="detailsError"></span>
+        </div>
+
+        <button type="submit" class="btn btn-full">Add Aspect</button>
+        <a href="{{ url_for('project_detail', project_id=project_id) }}"
+           class="btn btn-outline btn-full" style="margin-top:.5rem;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

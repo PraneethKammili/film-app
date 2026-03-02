@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}{{ project.title }} — FilmCollab{% endblock %}
+
+{% block content %}
+
+<!-- ── Project Header ── -->
+<div class="project-header">
+    <div>
+        <span class="badge">{{ project.genre }}</span>
+        <h1>{{ project.title }}</h1>
+        <p class="project-desc">{{ project.description }}</p>
+        <p class="project-owner">Created by <strong>{{ project.owner_name }}</strong></p>
+    </div>
+
+    <!-- Owner Actions -->
+    {% if session.get('user_id') == project.owner_id %}
+    <div class="project-actions">
+        <a href="{{ url_for('edit_project', project_id=project.id) }}" class="btn btn-outline">✏️ Edit</a>
+        <form action="{{ url_for('delete_project', project_id=project.id) }}" method="POST"
+              onsubmit="return confirm('Delete this project? This cannot be undone.')">
+            <button type="submit" class="btn btn-danger">🗑️ Delete</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<div class="two-col">
+
+    <!-- ── Left: Film Aspects ── -->
+    <div class="col">
+        <div class="section-header">
+            <h2>🎭 Film Aspects</h2>
+            {% if is_contributor %}
+                <a href="{{ url_for('add_aspect', project_id=project.id) }}" class="btn btn-sm">+ Add Aspect</a>
+            {% endif %}
+        </div>
+
+        {% if aspects %}
+            {% for aspect in aspects %}
+            <div class="aspect-card">
+                <div class="aspect-type">{{ aspect.aspect_type }}</div>
+                <p>{{ aspect.details }}</p>
+                <div class="aspect-meta">
+                    {% if aspect.contributor_name %}
+                        👤 {{ aspect.contributor_name }}
+                    {% else %}
+                        <em>Unassigned</em>
+                    {% endif %}
+
+                    {% if session.get('user_id') == aspect.assigned_to or session.get('user_id') == project.owner_id %}
+                    <form action="{{ url_for('delete_aspect', aspect_id=aspect.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-link-danger"
+                                onclick="return confirm('Remove this aspect?')">Remove</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-msg">No aspects added yet. Join and add one!</p>
+        {% endif %}
+    </div>
+
+    <!-- ── Right: Contributors ── -->
+    <div class="col">
+        <div class="section-header">
+            <h2>🤝 Contributors</h2>
+        </div>
+
+        {% if contributors %}
+            <ul class="contributor-list">
+                {% for c in contributors %}
+                <li>
+                    <span class="contributor-name">{{ c.username }}</span>
+                    <span class="contributor-role">{{ c.role }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-msg">No contributors yet.</p>
+        {% endif %}
+
+        <!-- Join / Leave buttons -->
+        {% if session.get('user_id') %}
+            {% if not is_contributor %}
+                <form action="{{ url_for('join_project', project_id=project.id) }}" method="POST">
+                    <button type="submit" class="btn btn-full" style="margin-top:1rem;">Join This Project</button>
+                </form>
+            {% elif session.get('user_id') != project.owner_id %}
+                <form action="{{ url_for('leave_project', project_id=project.id) }}" method="POST"
+                      onsubmit="return confirm('Leave this project?')">
+                    <button type="submit" class="btn btn-outline btn-full" style="margin-top:1rem;">Leave Project</button>
+                </form>
+            {% endif %}
+        {% else %}
+            <p class="empty-msg"><a href="{{ url_for('login') }}">Log in</a> to join this project.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

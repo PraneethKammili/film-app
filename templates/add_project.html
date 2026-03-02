@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Add Project — FilmCollab{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>🎬 New Film Project</h1>
+    <p>Create a new project and invite others to collaborate.</p>
+
+    <form id="projectForm" action="{{ url_for('add_project') }}" method="POST" novalidate>
+        <div class="form-group">
+            <label for="title">Project Title</label>
+            <input type="text" id="title" name="title" placeholder="e.g. The Last Horizon" required>
+            <span class="error-msg" id="titleError"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="genre">Genre</label>
+            <select id="genre" name="genre" required>
+                <option value="">-- Select a genre --</option>
+                <option>Drama</option>
+                <option>Comedy</option>
+                <option>Thriller</option>
+                <option>Horror</option>
+                <option>Action</option>
+                <option>Romance</option>
+                <option>Documentary</option>
+                <option>Sci-Fi</option>
+                <option>Animation</option>
+                <option>Other</option>
+            </select>
+            <span class="error-msg" id="genreError"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4"
+                      placeholder="Describe your film project..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-full">Create Project</button>
+        <a href="{{ url_for('index') }}" class="btn btn-outline btn-full" style="margin-top:.5rem;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

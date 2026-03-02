@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}FilmCollab — All Projects{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>🎬 Film Projects</h1>
+    <p>Browse collaborative film projects and join one to contribute!</p>
+    {% if session.get('user_id') %}
+        <a href="{{ url_for('add_project') }}" class="btn">+ Create New Project</a>
+    {% endif %}
+</div>
+
+{% if projects %}
+    <div class="project-grid">
+        {% for project in projects %}
+        <div class="card">
+            <div class="card-genre">{{ project.genre }}</div>
+            <h2 class="card-title">{{ project.title }}</h2>
+            <p class="card-desc">{{ project.description[:120] }}{% if project.description|length > 120 %}...{% endif %}</p>
+            <div class="card-meta">
+                <span>👤 {{ project.owner_name }}</span>
+                <span>🤝 {{ project.contributor_count }} contributor(s)</span>
+            </div>
+            <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-outline">View Project →</a>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>No projects yet. Be the first to create one!</p>
+    </div>
+{% endif %}
+{% endblock %}
