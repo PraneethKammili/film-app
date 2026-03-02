@@ -4,6 +4,7 @@
 # ============================================
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+import os
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,10 +15,11 @@ app.secret_key = 'film_secret_key_123'  # Change this in production!
 def get_db():
     """Create and return a MySQL database connection."""
     conn = mysql.connector.connect(
-        host='localhost',
-        user='root',         # Change to your MySQL username
-        password='',         # Change to your MySQL password
-        database='film_db'
+        host=os.environ.get("MYSQLHOST"),
+        user=os.environ.get("MYSQLUSER"),
+        password=os.environ.get("MYSQLPASSWORD"),
+        database=os.environ.get("MYSQLDATABASE"),
+        port=int(os.environ.get("MYSQLPORT"))
     )
     return conn
 
